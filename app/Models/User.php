@@ -18,10 +18,57 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
+        'is_banned',
+        'role',
         'password',
+        'profile_picture',
+        'phone',
+        'asal',
+        'umur',
+        'latar_belakang',
+        'created_at',
+        'updated_at',
     ];
+
+    public function rentals()
+    {
+        return $this->hasMany(Rental::class);
+    }
+
+    public function penalties()
+    {
+        return $this->hasMany(Penalty::class);
+    }
+
+    // Relasi sebagai Talent (rental di mana user menjadi talent)
+    public function rentalSebagaiTalent()
+    {
+        return $this->hasMany(Rental::class, 'talent_id');
+    }
+
+    // Jika User bisa menjadi Talent dan memiliki banyak Layanan
+    public function layanans()
+    {
+        return $this->hasMany(Layanan::class, 'talent_id');
+    }
+
+    // Fungsi bantu
+    public function isTalent()
+    {
+        return $this->role === 'talent';
+    }
+
+    public function isCustomer()
+    {
+        return $this->role === 'customer';
+    }
+
+    public function isBanned()
+    {
+        return $this->is_banned;
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -43,6 +90,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_banned' => 'boolean',
         ];
     }
 }
