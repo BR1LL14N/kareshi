@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/icon.png') }}">
     <title>Register - HeartRent</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -225,31 +227,13 @@
                 <p class="text-gray-600 text-lg">Create your account and start connecting</p>
             </div>
 
-            <!-- Progress Steps -->
-            <div class="animate-on-load animate-delay-200">
-                <div class="flex items-center justify-center space-x-4 mb-8">
-                    <div class="step-indicator flex items-center">
-                        <div class="w-8 h-8 bg-gradient-to-r from-secondary-500 to-secondary-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                            1
-                        </div>
-                        <span class="ml-2 text-sm font-medium text-gray-700">Account Info</span>
-                    </div>
-                    <div class="w-8 h-0.5 bg-gray-200"></div>
-                    <div class="step-indicator flex items-center">
-                        <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 text-sm font-bold">
-                            2
-                        </div>
-                        <span class="ml-2 text-sm font-medium text-gray-500">Profile</span>
-                    </div>
-                </div>
-            </div>
 
             <!-- Registration Form -->
             <div class="animate-on-load animate-delay-400">
                 <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                    <form class="space-y-6" action="{{ route('register') }}" method="POST" id="registerForm">
+                    <form class="space-y-6" action="{{ route('RequestRegister') }}" method="POST" id="registerForm">
                         @csrf
-                        
+                        <input type="hidden" name="role" value="user">
                         <!-- Email Field -->
                         <div>
                             <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -403,6 +387,29 @@
                             @enderror
                         </div>
 
+                        <!-- Nomor Telepon Field -->
+                        <div>
+                            <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Nomor Telepon <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-map-marker-alt text-gray-400"></i>
+                                </div>
+                                <input 
+                                    id="phone" 
+                                    name="phone" 
+                                    type="text" 
+                                    required 
+                                    class="input-focus appearance-none relative block w-full pl-10 pr-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:z-10 transition-all duration-200" 
+                                    placeholder="Masukkan Nomor Telepon Yang Masih Aktif"
+                                    value="{{ old('phone') }}"
+                                >
+                            </div>
+                            @error('phone')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <!-- Background Field -->
                         <div>
                             <label for="background" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -497,7 +504,7 @@
             <div class="text-center animate-on-load animate-delay-600">
                 <p class="text-gray-600">
                     Already have an account? 
-                    <a href="/login" class="font-semibold text-primary-600 hover:text-primary-700 transition-colors">
+                    <a href="{{ route('login') }}" class="font-semibold text-primary-600 hover:text-primary-700 transition-colors">
                         Sign in here
                     </a>
                 </p>
@@ -638,7 +645,11 @@
                 if (passwordInput.value !== confirmPasswordInput.value) {
                     e.preventDefault();
                     confirmPasswordInput.classList.add('border-red-300');
-                    alert('Passwords do not match!');
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Password yang anda masukkan tidak cocok.",
+                    });
                     return;
                 }
                 

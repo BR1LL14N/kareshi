@@ -206,7 +206,7 @@
             <!-- Login Form -->
             <div class="animate-on-load animate-delay-200">
                 <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                    <form class="space-y-6" action="{{ route('login') }}" method="POST">
+                    <form class="space-y-6" action="{{ route('RequestLogin') }}" method="POST">
                         @csrf
                         
                         <!-- Email Field -->
