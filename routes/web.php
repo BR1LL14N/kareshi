@@ -21,8 +21,25 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Routes that require authentication can be added here
     Route::get('/dashboard', function () {
-        return view('user.dashboard');
-    })->name('dashboard');
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    Route::get('/manageUsers', function () {
+        return view('admin.manageUsers');
+    })->name('admin.manageUsers');
+
+    Route::get('/manageRental', function () {
+        return view('admin.manageRentals');
+    })->name('admin.manageRental');
+
+    Route::get('/managePenalty', function () {
+        return view('admin.managePenalty');
+    })->name('admin.managePenalty');
+
+    Route::get('/manageServices', function () {
+        return view('admin.manageLayanan');
+    })->name('admin.manageServices');
 });
+
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');  
