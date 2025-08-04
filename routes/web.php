@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard'); // ✅ langsung ke dashboard kalau sudah login
+        return redirect()->route('admin.dashboard'); // ✅ langsung ke dashboard kalau sudah login
     }
     return view('landingPage');
 })->name('home');

@@ -9,6 +9,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('images/icon.png') }}">
     @stack('stylesJS')
     @stack('styles')
+    
 </head>
 <body class="font-sans bg-gray-50">
     <!-- Sidebar -->

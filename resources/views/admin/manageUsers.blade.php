@@ -254,6 +254,31 @@
     .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
     .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
     .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+
+    /* Modal Styles */
+    .modal-show {
+        display: flex !important;
+    }
+
+    .modal-show #modal-content {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .modal-backdrop {
+        backdrop-filter: blur(4px);
+    }
+
+    /* Form Styles */
+    .form-input:focus {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+    }
+
+    /* Password Toggle */
+    .password-visible {
+        color: #3b82f6;
+    }
 </style>
 @endpush
 
@@ -267,7 +292,7 @@
                 <h2 class="text-3xl font-bold text-gray-900 mb-2">Manage Users</h2>
                 <p class="text-gray-600">Manage and monitor all users in your platform</p>
             </div>
-            <button class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <button id="add-user-btn" class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                 <i class="fas fa-plus mr-2"></i>Add New User
             </button>
         </div>
@@ -346,218 +371,422 @@
         <!-- Users Table -->
         <div class="bg-white rounded-3xl shadow-xl overflow-hidden animate-on-load animate-delay-500">
             <!-- Table Header -->
-            <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900">User Management</h3>
-                        <p class="text-sm text-gray-600 mt-1">Manage all registered users and their permissions</p>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <div class="relative">
-                            <input type="text" placeholder="Search users..." class="search-input px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 w-full sm:w-64">
-                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            @livewire('user-table')
+        </div>
+
+        <!-- Add New User Modal -->
+        <div id="add-user-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+                <!-- Modal Header -->
+                <div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 rounded-t-3xl z-10">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">Add New User</h3>
+                            <p class="text-sm text-gray-600 mt-1">Create a new user account with complete information</p>
                         </div>
-                        <select class="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200">
-                            <option>All Status</option>
-                            <option>Active</option>
-                            <option>Pending</option>
-                            <option>Suspended</option>
-                        </select>
-                        <button class="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-all duration-200 flex items-center">
-                            <i class="fas fa-filter mr-2"></i>
-                            Filter
-                        </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Table Content -->
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
-                        <tr>
-                            <th class="text-left py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wider">User</th>
-                            <th class="text-left py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wider">Email</th>
-                            <th class="text-left py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wider">Role</th>
-                            <th class="text-left py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wider">Status</th>
-                            <th class="text-left py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wider">Joined</th>
-                            <th class="text-left py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <!-- User Row 1 -->
-                        <tr class="table-row-hover animate-on-load animate-delay-600">
-                            <td class="py-4 px-6">
-                                <div class="flex items-center">
-                                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
-                                        <span class="text-white font-semibold text-lg">JD</span>
-                                    </div>
-                                    <div class="ml-4">
-                                        <p class="font-semibold text-gray-900 text-lg">John Doe</p>
-                                        <p class="text-sm text-gray-500">@johndoe</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-4 px-6">
-                                <p class="text-gray-900 font-medium">john.doe@example.com</p>
-                                <p class="text-sm text-gray-500">Verified</p>
-                            </td>
-                            <td class="py-4 px-6">
-                                <span class="px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-full text-xs font-semibold">Client</span>
-                            </td>
-                            <td class="py-4 px-6">
-                                <div class="flex items-center">
-                                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                                    <span class="px-3 py-1 bg-gradient-to-r from-green-100 to-green-200 text-green-800 rounded-full text-xs font-semibold">Active</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-6">
-                                <p class="text-gray-900 font-medium">Dec 15, 2023</p>
-                                <p class="text-sm text-gray-500">3 months ago</p>
-                            </td>
-                            <td class="py-4 px-6">
-                                <div class="flex space-x-2">
-                                    <button class="action-button text-blue-600 hover:text-blue-700" title="Edit User">
-                                        <i class="fas fa-edit text-lg"></i>
-                                    </button>
-                                    <button class="action-button text-green-600 hover:text-green-700" title="View Profile">
-                                        <i class="fas fa-eye text-lg"></i>
-                                    </button>
-                                    <button class="action-button text-orange-600 hover:text-orange-700" title="Send Message">
-                                        <i class="fas fa-envelope text-lg"></i>
-                                    </button>
-                                    <button class="action-button text-red-600 hover:text-red-700" title="Delete User">
-                                        <i class="fas fa-trash text-lg"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                <!-- Modal Body -->
+                <div class="px-8 py-6">
+                    <form id="add-user-form" class="space-y-6">
+                        <!-- Username -->
+                        <div class="space-y-2">
+                            <label for="username" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-user mr-2 text-primary-500"></i>Username
+                            </label>
+                            <input type="text" id="username" name="username" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Enter username">
+                        </div>
 
-                        <!-- User Row 2 -->
-                        <tr class="table-row-hover animate-on-load animate-delay-700">
-                            <td class="py-4 px-6">
-                                <div class="flex items-center">
-                                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                                        <span class="text-white font-semibold text-lg">SM</span>
-                                    </div>
-                                    <div class="ml-4">
-                                        <p class="font-semibold text-gray-900 text-lg">Sarah Miller</p>
-                                        <p class="text-sm text-gray-500">@sarahmiller</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-4 px-6">
-                                <p class="text-gray-900 font-medium">sarah.miller@example.com</p>
-                                <p class="text-sm text-gray-500">Verified</p>
-                            </td>
-                            <td class="py-4 px-6">
-                                <span class="px-3 py-1 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 rounded-full text-xs font-semibold">Companion</span>
-                            </td>
-                            <td class="py-4 px-6">
-                                <div class="flex items-center">
-                                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                                    <span class="px-3 py-1 bg-gradient-to-r from-green-100 to-green-200 text-green-800 rounded-full text-xs font-semibold">Active</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-6">
-                                <p class="text-gray-900 font-medium">Nov 28, 2023</p>
-                                <p class="text-sm text-gray-500">4 months ago</p>
-                            </td>
-                            <td class="py-4 px-6">
-                                <div class="flex space-x-2">
-                                    <button class="action-button text-blue-600 hover:text-blue-700" title="Edit User">
-                                        <i class="fas fa-edit text-lg"></i>
-                                    </button>
-                                    <button class="action-button text-green-600 hover:text-green-700" title="View Profile">
-                                        <i class="fas fa-eye text-lg"></i>
-                                    </button>
-                                    <button class="action-button text-orange-600 hover:text-orange-700" title="Send Message">
-                                        <i class="fas fa-envelope text-lg"></i>
-                                    </button>
-                                    <button class="action-button text-red-600 hover:text-red-700" title="Delete User">
-                                        <i class="fas fa-trash text-lg"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        <!-- Email -->
+                        <div class="space-y-2">
+                            <label for="email" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-envelope mr-2 text-primary-500"></i>Email Address
+                            </label>
+                            <input type="email" id="email" name="email" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Enter email address">
+                        </div>
 
-                        <!-- User Row 3 -->
-                        <tr class="table-row-hover animate-on-load animate-delay-800">
-                            <td class="py-4 px-6">
-                                <div class="flex items-center">
-                                    <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
-                                        <span class="text-white font-semibold text-lg">MJ</span>
-                                    </div>
-                                    <div class="ml-4">
-                                        <p class="font-semibold text-gray-900 text-lg">Mike Johnson</p>
-                                        <p class="text-sm text-gray-500">@mikejohnson</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-4 px-6">
-                                <p class="text-gray-900 font-medium">mike.johnson@example.com</p>
-                                <p class="text-sm text-orange-500">Pending verification</p>
-                            </td>
-                            <td class="py-4 px-6">
-                                <span class="px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-full text-xs font-semibold">Client</span>
-                            </td>
-                            <td class="py-4 px-6">
-                                <div class="flex items-center">
-                                    <div class="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
-                                    <span class="px-3 py-1 bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 rounded-full text-xs font-semibold">Pending</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-6">
-                                <p class="text-gray-900 font-medium">Dec 20, 2023</p>
-                                <p class="text-sm text-gray-500">2 days ago</p>
-                            </td>
-                            <td class="py-4 px-6">
-                                <div class="flex space-x-2">
-                                    <button class="action-button text-blue-600 hover:text-blue-700" title="Edit User">
-                                        <i class="fas fa-edit text-lg"></i>
-                                    </button>
-                                    <button class="action-button text-green-600 hover:text-green-700" title="Approve User">
-                                        <i class="fas fa-check text-lg"></i>
-                                    </button>
-                                    <button class="action-button text-orange-600 hover:text-orange-700" title="Send Message">
-                                        <i class="fas fa-envelope text-lg"></i>
-                                    </button>
-                                    <button class="action-button text-red-600 hover:text-red-700" title="Reject User">
-                                        <i class="fas fa-times text-lg"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                        <!-- Password -->
+                        <div class="space-y-2">
+                            <label for="password" class="flex items-center text-sm font-semibold text-gray-700">
+                                <i class="fas fa-lock mr-2 text-primary-500"></i>Password
+                            </label>
+                            <div class="relative">
+                                <input type="password" id="password" name="password" required
+                                    class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="Enter password">
+                                <button type="button" id="toggle-password"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
 
-            <!-- Table Footer -->
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="text-sm text-gray-700">
-                        Showing <span class="font-semibold">1</span> to <span class="font-semibold">10</span> of <span class="font-semibold">2,847</span> users
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <button class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            Previous
+                        <!-- Phone Number -->
+                        <div class="space-y-2">
+                            <label for="phone" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-phone mr-2 text-primary-500"></i>Nomor Telepon
+                            </label>
+                            <input type="tel" id="phone" name="phone" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Contoh: +62 812-3456-7890">
+                        </div>
+
+                        <!-- Origin (Asal) -->
+                        <div class="space-y-2">
+                            <label for="origin" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-map-marker-alt mr-2 text-primary-500"></i>Asal Daerah
+                            </label>
+                            <input type="text" id="origin" name="origin" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Contoh: Jakarta, Indonesia">
+                        </div>
+
+                        <!-- Age -->
+                        <div class="space-y-2">
+                            <label for="age" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-birthday-cake mr-2 text-primary-500"></i>Umur
+                            </label>
+                            <input type="number" id="age" name="age" min="18" max="100" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Masukkan umur">
+                        </div>
+
+                        <!-- Background -->
+                        <div class="space-y-2">
+                            <label for="background" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-graduation-cap mr-2 text-primary-500"></i>Latar Belakang
+                            </label>
+                            <textarea id="background" name="background" rows="4" required
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 resize-none"
+                                      placeholder="Ceritakan tentang latar belakang pendidikan, pekerjaan, atau pengalaman..."></textarea>
+                        </div>
+
+                        <!-- User Role -->
+                        <div class="space-y-2">
+                            <label for="role" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-user-tag mr-2 text-primary-500"></i>Role
+                            </label>
+                            <select id="role" name="role" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200">
+                                <option value="">Pilih Role</option>
+                                <option value="client">Client</option>
+                                <option value="companion">Companion</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-8 py-6 rounded-b-3xl">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
+                        <button type="button" id="cancel-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold">
+                            Cancel
                         </button>
-                        <button class="px-3 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-lg hover:bg-primary-700 transition-colors">
-                            1
-                        </button>
-                        <button class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            2
-                        </button>
-                        <button class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            3
-                        </button>
-                        <button class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                            Next
+                        <button type="submit" form="add-user-form" class="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl">
+                            <i class="fas fa-plus mr-2"></i>Create User
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Edit User Modal -->
+        <div id="edit-user-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="edit-modal-content">
+                <!-- Modal Header -->
+                <div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 rounded-t-3xl">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">Edit User</h3>
+                            <p class="text-sm text-gray-600 mt-1">Update user information and settings</p>
+                        </div>
+                        <button id="close-edit-modal" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="px-8 py-6">
+                    <form id="edit-user-form" class="space-y-6">
+                        <input type="hidden" id="edit-user-id" name="user_id">
+                        
+                        <!-- Username -->
+                        <div class="space-y-2">
+                            <label for="edit-username" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-user mr-2 text-blue-500"></i>Username
+                            </label>
+                            <input type="text" id="edit-username" name="username" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Enter username">
+                        </div>
+
+                        <!-- Email -->
+                        <div class="space-y-2">
+                            <label for="edit-email" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-envelope mr-2 text-blue-500"></i>Email Address
+                            </label>
+                            <input type="email" id="edit-email" name="email" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Enter email address">
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="space-y-2">
+                            <label for="edit-phone" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-phone mr-2 text-blue-500"></i>Nomor Telepon
+                            </label>
+                            <input type="tel" id="edit-phone" name="phone" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Contoh: +62 812-3456-7890">
+                        </div>
+
+                        <!-- Origin (Asal) -->
+                        <div class="space-y-2">
+                            <label for="edit-origin" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Asal Daerah
+                            </label>
+                            <input type="text" id="edit-origin" name="origin" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Contoh: Jakarta, Indonesia">
+                        </div>
+
+                        <!-- Age -->
+                        <div class="space-y-2">
+                            <label for="edit-age" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-birthday-cake mr-2 text-blue-500"></i>Umur
+                            </label>
+                            <input type="number" id="edit-age" name="age" min="18" max="100" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Masukkan umur">
+                        </div>
+
+                        <!-- Background -->
+                        <div class="space-y-2">
+                            <label for="edit-background" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-graduation-cap mr-2 text-blue-500"></i>Latar Belakang
+                            </label>
+                            <textarea id="edit-background" name="background" rows="4" required
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+                                      placeholder="Ceritakan tentang latar belakang pendidikan, pekerjaan, atau pengalaman..."></textarea>
+                        </div>
+
+                        <!-- User Role -->
+                        <div class="space-y-2">
+                            <label for="edit-role" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-user-tag mr-2 text-blue-500"></i>Role
+                            </label>
+                            <select id="edit-role" name="role" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                                <option value="">Pilih Role</option>
+                                <option value="client">Client</option>
+                                <option value="companion">Companion</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="space-y-2">
+                            <label for="edit-status" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-toggle-on mr-2 text-blue-500"></i>Status
+                            </label>
+                            <select id="edit-status" name="status" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                                <option value="active">Active</option>
+                                <option value="pending">Pending</option>
+                                <option value="suspended">Suspended</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-8 py-6 rounded-b-3xl">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
+                        <button type="button" id="cancel-edit-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold">
+                            Cancel
+                        </button>
+                        <button type="submit" form="edit-user-form" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl">
+                            <i class="fas fa-save mr-2"></i>Update User
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Send Message Modal -->
+        <div id="message-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0" id="message-modal-content">
+                <!-- Modal Header -->
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-6 rounded-t-3xl">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-envelope text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">Send Message</h3>
+                                <p class="text-orange-100 text-sm">Send a message to <span id="message-user-name">user</span></p>
+                            </div>
+                        </div>
+                        <button id="close-message-modal" class="text-orange-100 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="px-8 py-6">
+                    <form id="send-message-form" class="space-y-6">
+                        <input type="hidden" id="message-user-id" name="user_id">
+                        
+                        <!-- Subject -->
+                        <div class="space-y-2">
+                            <label for="message-subject" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-tag mr-2 text-orange-500"></i>Subject
+                            </label>
+                            <input type="text" id="message-subject" name="subject" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="Enter message subject">
+                        </div>
+
+                        <!-- Message Type -->
+                        <div class="space-y-2">
+                            <label for="message-type" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-list mr-2 text-orange-500"></i>Message Type
+                            </label>
+                            <select id="message-type" name="type" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200">
+                                <option value="">Select Type</option>
+                                <option value="notification">Notification</option>
+                                <option value="warning">Warning</option>
+                                <option value="reminder">Reminder</option>
+                                <option value="welcome">Welcome Message</option>
+                                <option value="general">General</option>
+                            </select>
+                        </div>
+
+                        <!-- Message Content -->
+                        <div class="space-y-2">
+                            <label for="message-content" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-comment mr-2 text-orange-500"></i>Message
+                            </label>
+                            <textarea id="message-content" name="message" rows="6" required
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
+                                      placeholder="Type your message here..."></textarea>
+                            <div class="text-right text-sm text-gray-500">
+                                <span id="char-count">0</span>/500 characters
+                            </div>
+                        </div>
+
+                        <!-- Priority -->
+                        <div class="space-y-2">
+                            <label for="message-priority" class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-exclamation-circle mr-2 text-orange-500"></i>Priority
+                            </label>
+                            <select id="message-priority" name="priority" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200">
+                                <option value="low">Low</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="bg-gray-50 border-t border-gray-200 px-8 py-6 rounded-b-3xl">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
+                        <button type="button" id="cancel-message-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold">
+                            Cancel
+                        </button>
+                        <button type="submit" form="send-message-form" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl">
+                            <i class="fas fa-paper-plane mr-2"></i>Send Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete User Modal -->
+        <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0" id="delete-modal-content">
+                <!-- Modal Header -->
+                <div class="bg-gradient-to-r from-red-500 to-red-600 text-white px-8 py-6 rounded-t-3xl">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-exclamation-triangle text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">Delete User</h3>
+                            <p class="text-red-100 text-sm">This action cannot be undone</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="px-8 py-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-times text-2xl text-red-600"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Are you sure?</h4>
+                        <p class="text-gray-600 mb-4">
+                            You are about to delete <strong id="delete-user-name">user</strong>. 
+                            This will permanently remove all user data, including:
+                        </p>
+                        <ul class="text-left text-sm text-gray-600 bg-gray-50 rounded-xl p-4 mb-6">
+                            <li class="flex items-center mb-2">
+                                <i class="fas fa-check text-red-500 mr-2"></i>
+                                Profile information and settings
+                            </li>
+                            <li class="flex items-center mb-2">
+                                <i class="fas fa-check text-red-500 mr-2"></i>
+                                Message history and conversations
+                            </li>
+                            <li class="flex items-center mb-2">
+                                <i class="fas fa-check text-red-500 mr-2"></i>
+                                Booking history and transactions
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-red-500 mr-2"></i>
+                                Reviews and ratings
+                            </li>
+                        </ul>
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                            <div class="flex items-center">
+                                <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+                                <p class="text-sm text-yellow-800">
+                                    <strong>Warning:</strong> This action is irreversible and cannot be undone.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="delete-user-id" name="user_id">
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="bg-gray-50 border-t border-gray-200 px-8 py-6 rounded-b-3xl">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
+                        <button type="button" id="cancel-delete-btn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold">
+                            Cancel
+                        </button>
+                        <button type="button" id="confirm-delete-btn" class="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl">
+                            <i class="fas fa-trash mr-2"></i>Delete User
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection
@@ -714,5 +943,376 @@
             }
         }
     });
+
+    // Modal functionality
+    const addUserBtn = document.getElementById('add-user-btn');
+    const addUserModal = document.getElementById('add-user-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const addUserForm = document.getElementById('add-user-form');
+    const modalContent = document.getElementById('modal-content');
+
+    // Show modal
+    function showModal() {
+        addUserModal.classList.remove('hidden');
+        addUserModal.classList.add('modal-show', 'modal-backdrop');
+        document.body.style.overflow = 'hidden';
+        
+        // Animate modal appearance
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    // Hide modal
+    function hideModal() {
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            addUserModal.classList.add('hidden');
+            addUserModal.classList.remove('modal-show', 'modal-backdrop');
+            document.body.style.overflow = 'auto';
+            addUserForm.reset();
+        }, 300);
+    }
+
+    // Event listeners
+    if (addUserBtn) {
+        addUserBtn.addEventListener('click', showModal);
+    }
+
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', hideModal);
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', hideModal);
+    }
+
+    // Close modal when clicking outside
+    addUserModal.addEventListener('click', function(e) {
+        if (e.target === addUserModal) {
+            hideModal();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !addUserModal.classList.contains('hidden')) {
+            hideModal();
+        }
+    });
+
+    // Password toggle functionality
+    const togglePassword = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('password');
+
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            if (type === 'password') {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                this.classList.remove('password-visible');
+            } else {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                this.classList.add('password-visible');
+            }
+        });
+    }
+
+    // Form submission
+    if (addUserForm) {
+        addUserForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const userData = Object.fromEntries(formData);
+            
+            // Here you can add your form submission logic
+            console.log('User data:', userData);
+            
+            // Show success message (you can customize this)
+            alert('User berhasil ditambahkan!');
+            
+            // Hide modal
+            hideModal();
+        });
+    }
+
+    // Form validation styling
+    const formInputs = document.querySelectorAll('#add-user-form input, #add-user-form textarea, #add-user-form select');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.classList.add('form-input');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.classList.remove('form-input');
+        });
+    });
+
+
+    // Edit User Modal functionality
+    const editUserModal = document.getElementById('edit-user-modal');
+    const closeEditModalBtn = document.getElementById('close-edit-modal');
+    const cancelEditBtn = document.getElementById('cancel-edit-btn');
+    const editUserForm = document.getElementById('edit-user-form');
+    const editModalContent = document.getElementById('edit-modal-content');
+
+    // Message Modal functionality
+    const messageModal = document.getElementById('message-modal');
+    const closeMessageModalBtn = document.getElementById('close-message-modal');
+    const cancelMessageBtn = document.getElementById('cancel-message-btn');
+    const sendMessageForm = document.getElementById('send-message-form');
+    const messageModalContent = document.getElementById('message-modal-content');
+    const messageContent = document.getElementById('message-content');
+    const charCount = document.getElementById('char-count');
+
+    // Delete Modal functionality
+    const deleteModal = document.getElementById('delete-modal');
+    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    const deleteModalContent = document.getElementById('delete-modal-content');
+
+    // Show Edit Modal
+    function showEditModal(userData) {
+        document.getElementById('edit-user-id').value = userData.id;
+        document.getElementById('edit-username').value = userData.username;
+        document.getElementById('edit-email').value = userData.email;
+        document.getElementById('edit-phone').value = userData.phone || '';
+        document.getElementById('edit-origin').value = userData.origin || '';
+        document.getElementById('edit-age').value = userData.age || '';
+        document.getElementById('edit-background').value = userData.background || '';
+        document.getElementById('edit-role').value = userData.role;
+        document.getElementById('edit-status').value = userData.status;
+
+        editUserModal.classList.remove('hidden');
+        editUserModal.classList.add('modal-show', 'modal-backdrop');
+        document.body.style.overflow = 'hidden';
+        
+        setTimeout(() => {
+            editModalContent.style.transform = 'scale(1)';
+            editModalContent.style.opacity = '1';
+        }, 10);
+    }
+
+    // Hide Edit Modal
+    function hideEditModal() {
+        editModalContent.style.transform = 'scale(0.95)';
+        editModalContent.style.opacity = '0';
+        
+        setTimeout(() => {
+            editUserModal.classList.add('hidden');
+            editUserModal.classList.remove('modal-show', 'modal-backdrop');
+            document.body.style.overflow = 'auto';
+            editUserForm.reset();
+        }, 300);
+    }
+
+    // Show Message Modal
+    function showMessageModal(userData) {
+        document.getElementById('message-user-id').value = userData.id;
+        document.getElementById('message-user-name').textContent = userData.name;
+
+        messageModal.classList.remove('hidden');
+        messageModal.classList.add('modal-show', 'modal-backdrop');
+        document.body.style.overflow = 'hidden';
+        
+        setTimeout(() => {
+            messageModalContent.style.transform = 'scale(1)';
+            messageModalContent.style.opacity = '1';
+        }, 10);
+    }
+
+    // Hide Message Modal
+    function hideMessageModal() {
+        messageModalContent.style.transform = 'scale(0.95)';
+        messageModalContent.style.opacity = '0';
+        
+        setTimeout(() => {
+            messageModal.classList.add('hidden');
+            messageModal.classList.remove('modal-show', 'modal-backdrop');
+            document.body.style.overflow = 'auto';
+            sendMessageForm.reset();
+            charCount.textContent = '0';
+        }, 300);
+    }
+
+    // Show Delete Modal
+    function showDeleteModal(userData) {
+        document.getElementById('delete-user-id').value = userData.id;
+        document.getElementById('delete-user-name').textContent = userData.name;
+
+        deleteModal.classList.remove('hidden');
+        deleteModal.classList.add('modal-show', 'modal-backdrop');
+        document.body.style.overflow = 'hidden';
+        
+        setTimeout(() => {
+            deleteModalContent.style.transform = 'scale(1)';
+            deleteModalContent.style.opacity = '1';
+        }, 10);
+    }
+
+    // Hide Delete Modal
+    function hideDeleteModal() {
+        deleteModalContent.style.transform = 'scale(0.95)';
+        deleteModalContent.style.opacity = '0';
+        
+        setTimeout(() => {
+            deleteModal.classList.add('hidden');
+            deleteModal.classList.remove('modal-show', 'modal-backdrop');
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+
+    // Event listeners for Edit Modal
+    if (closeEditModalBtn) {
+        closeEditModalBtn.addEventListener('click', hideEditModal);
+    }
+    if (cancelEditBtn) {
+        cancelEditBtn.addEventListener('click', hideEditModal);
+    }
+
+    // Event listeners for Message Modal
+    if (closeMessageModalBtn) {
+        closeMessageModalBtn.addEventListener('click', hideMessageModal);
+    }
+    if (cancelMessageBtn) {
+        cancelMessageBtn.addEventListener('click', hideMessageModal);
+    }
+
+    // Event listeners for Delete Modal
+    if (cancelDeleteBtn) {
+        cancelDeleteBtn.addEventListener('click', hideDeleteModal);
+    }
+
+    // Close modals when clicking outside
+    editUserModal.addEventListener('click', function(e) {
+        if (e.target === editUserModal) {
+            hideEditModal();
+        }
+    });
+
+    messageModal.addEventListener('click', function(e) {
+        if (e.target === messageModal) {
+            hideMessageModal();
+        }
+    });
+
+    deleteModal.addEventListener('click', function(e) {
+        if (e.target === deleteModal) {
+            hideDeleteModal();
+        }
+    });
+
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (!editUserModal.classList.contains('hidden')) {
+                hideEditModal();
+            }
+            if (!messageModal.classList.contains('hidden')) {
+                hideMessageModal();
+            }
+            if (!deleteModal.classList.contains('hidden')) {
+                hideDeleteModal();
+            }
+        }
+    });
+
+    // Character counter for message
+    if (messageContent && charCount) {
+        messageContent.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+            
+            if (length > 500) {
+                charCount.style.color = '#ef4444';
+                this.value = this.value.substring(0, 500);
+                charCount.textContent = '500';
+            } else if (length > 450) {
+                charCount.style.color = '#f59e0b';
+            } else {
+                charCount.style.color = '#6b7280';
+            }
+        });
+    }
+
+    // Handle action button clicks
+    document.addEventListener('click', function(e) {
+        const button = e.target.closest('.action-button');
+        if (!button) return;
+
+        const row = button.closest('tr');
+        const userData = {
+            id: row.dataset.userId || Math.floor(Math.random() * 1000), // Temporary ID
+            name: row.querySelector('td:first-child .font-semibold').textContent,
+            username: row.querySelector('td:first-child .text-gray-500').textContent.replace('@', ''),
+            email: row.querySelector('td:nth-child(2) .font-medium').textContent,
+            role: row.querySelector('td:nth-child(3) span').textContent.toLowerCase(),
+            status: row.querySelector('td:nth-child(4) span').textContent.toLowerCase(),
+            phone: '+62 812-3456-7890', // Sample data
+            origin: 'Jakarta, Indonesia', // Sample data
+            age: '25', // Sample data
+            background: 'Sample background information' // Sample data
+        };
+
+        if (button.title === 'Edit User') {
+            showEditModal(userData);
+        } else if (button.title === 'Send Message') {
+            showMessageModal(userData);
+        } else if (button.title === 'Delete User') {
+            showDeleteModal(userData);
+        }
+    });
+
+    // Form submissions
+    if (editUserForm) {
+        editUserForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const userData = Object.fromEntries(formData);
+            
+            console.log('Updated user data:', userData);
+            alert('User berhasil diupdate!');
+            hideEditModal();
+        });
+    }
+
+    if (sendMessageForm) {
+        sendMessageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const messageData = Object.fromEntries(formData);
+            
+            console.log('Message data:', messageData);
+            alert('Pesan berhasil dikirim!');
+            hideMessageModal();
+        });
+    }
+
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', function() {
+            const userId = document.getElementById('delete-user-id').value;
+            const userName = document.getElementById('delete-user-name').textContent;
+            
+            console.log('Deleting user:', { id: userId, name: userName });
+            alert('User berhasil dihapus!');
+            hideDeleteModal();
+            
+            // Here you would typically remove the row from the table
+            // or refresh the page/data
+        });
+    }
 </script>
 @endpush
