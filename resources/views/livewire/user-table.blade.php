@@ -593,7 +593,7 @@
                 <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
                     <button 
                         type="button" 
-                        @click="$wire.showDeleteModal = false"
+                        wire:click="closeDeleteModal"
                         class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-semibold">
                         Cancel
                     </button>
